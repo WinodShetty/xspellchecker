@@ -1,23 +1,42 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
 
+const customDictionary = {
+  teh: "the",
+  wrok: "work",
+  fot: "for",
+  exampl: "example"
+};
+
 function App() {
+  const [text, setText] = useState('');
+  const [suggestion, setSuggestion] = useState('');
+
+  const handleTextChange = (e) => {
+    const inputText = e.target.value;
+    setText(inputText);
+
+    const words = inputText.split(/\s+/);
+    const firstIncorrectWord = words.find(word => customDictionary[word.toLowerCase()]);
+
+    if (firstIncorrectWord) {
+      setSuggestion(`Did you mean: ${customDictionary[firstIncorrectWord.toLowerCase()]}?`);
+    } else {
+      setSuggestion('');
+    }
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Spell Check and Auto-Correction</h1>
+      <textarea
+        value={text}
+        onChange={handleTextChange}
+        placeholder="Enter Text..."
+        rows="10"
+        cols="50"
+      />
+      {suggestion && <p>{suggestion}</p>}
     </div>
   );
 }
